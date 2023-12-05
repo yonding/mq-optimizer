@@ -31,6 +31,8 @@ public class Main {
     private static List<SqlNode> sqlNodeList = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException, SqlParseException, ValidationException {
+
+
         // JDBC 연결 설정
         Connection connection = DriverManager.getConnection("jdbc:calcite:");
         // Unwrap our connection using the CalciteConnection
@@ -56,7 +58,6 @@ public class Main {
                 .parserConfig(parserConfig)
                 .context(Contexts.of(calciteConnection.config()));
 
-        Planner planner = Frameworks.getPlanner(config.build());
         Scanner sc = new Scanner(System.in);
         String sql = sc.nextLine();
         System.out.println("sql = " + sql);
@@ -68,6 +69,7 @@ public class Main {
         else    break;
         }
 
+        Planner planner = Frameworks.getPlanner(config.build());
         SqlNode node;
         SqlNode validateNode;
         SqlWriter writer;
@@ -90,6 +92,10 @@ public class Main {
 
         // Print out our formatted SQL to the console
     }
+
+    //    select * from "mysql"."payment"
+    //    select * from "mysql"."overdue"
+    //    select * from "mysql"."payment" JOIN "mysql"."user" ON "payment"."user_id" = "user"."id" WHERE "user"."id" = 1
     static class SqlNodeVisitor extends SqlShuttle {
         @Override
         public SqlNode visit(SqlCall node) {
@@ -100,6 +106,3 @@ public class Main {
     }
 }
 
-//    select * from "mysql"."payment"
-//    select * from "mysql"."overdue"
-//    select * from "mysql"."payment" JOIN "mysql"."user" ON "payment"."user_id" = "user"."id" WHERE "user"."id" = 1

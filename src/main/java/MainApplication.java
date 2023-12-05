@@ -2,7 +2,7 @@ import org.apache.calcite.adapter.jdbc.JdbcSchema;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.plan.Contexts;
 import org.apache.calcite.schema.SchemaPlus;
-import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.tools.Frameworks;
@@ -19,12 +19,11 @@ import java.util.Scanner;
 
 public class MainApplication {
     private static final String MYSQL_SCHEMA = "mysql";
-    private static List<String> queryList = new ArrayList<>();
-    private static List<SqlNode> sqlNodeList = new ArrayList<>();
+    private static List<Query> queryList = new ArrayList<>();
 
     public static void main(String[] args) throws SQLException, SqlParseException, ValidationException {
 
-//      1. Make a CalciteConnection Instance **************************************************
+//      1. Make a CalciteConnection Instance ***************************************************************************
         Connection connection = DriverManager.getConnection("jdbc:calcite:");
         CalciteConnection calciteConnection = connection.unwrap(CalciteConnection.class);
 
@@ -39,7 +38,7 @@ public class MainApplication {
         );
 
 
-//      2. Add MySQL Data Source **************************************************************
+//      2. Add MySQL Data Source ***************************************************************************************
         rootSchema.add(MYSQL_SCHEMA, JdbcSchema.create(rootSchema, MYSQL_SCHEMA, mysqlDataSource, null, null));
 
         Frameworks.ConfigBuilder config = Frameworks.newConfigBuilder()
@@ -48,18 +47,15 @@ public class MainApplication {
                 .context(Contexts.of(calciteConnection.config()));
 
 
-//      3. Bundle multiple queries into a single batch ****************************************
+//      3. Bundle multiple queries into a single batch *****************************************************************
         do {
             Planner planner = Frameworks.getPlanner(config.build());
             Scanner sc = new Scanner(System.in);
             String sql = sc.nextLine();
             if(sql.equals("q")) break;
             try{
-                // Validation
-                SqlNode node = planner.parse(sql); // SqlParseException
-                SqlNode validateNode = planner.validate(node); // ValidationException
-                sqlNodeList.add(validateNode);
-                queryList.add(sql);
+                Query query = new Query(sql, planner);
+                queryList.add(query);
                 System.out.println("Query has been scheduled for batch processing.");
                 System.out.println("ㄴ[Scheduled Query] : " + sql);
             }catch(SqlParseException sqlParseException){
@@ -68,17 +64,20 @@ public class MainApplication {
                 System.out.println("This query is invalid. Please check the query.");
             }
         }while(true);
-        System.out.println("");
-        System.out.println("[Query List]");
+
+        // print query list
+        System.out.println("\n[Query List]");
         int number = 1;
-        for(String query : queryList) {
-            System.out.println(number++ + ". " + query);
+        for(Query query : queryList) {
+            System.out.println(number++ + ". " + query.sql);
         }
+
     }
 
 }
 
 
-//    select * from "mysql"."payment"
-//    select * from "mysql"."overdue"
-//    select * from "mysql"."payment" JOIN "mysql"."user" ON "payment"."user_id" = "user"."id" WHERE "user"."id" = 1
+
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE p."amount" >= 5000
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE p."method" = 'TOSSPAY'
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE u."id" = 1
