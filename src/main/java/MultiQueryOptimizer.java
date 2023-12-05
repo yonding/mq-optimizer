@@ -1,6 +1,11 @@
 import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.sql.SqlNode;
+import org.apache.calcite.sql.parser.SqlParseException;
+import org.apache.calcite.sql.parser.SqlParser;
+import org.apache.calcite.tools.Planner;
 import org.apache.calcite.tools.RelBuilder;
+import org.apache.calcite.tools.RelConversionException;
+import org.apache.calcite.tools.ValidationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,13 +37,13 @@ public class MultiQueryOptimizer {
         return batchList;
     }
 
-    public static RelNode makeGlobalQuery(RelBuilder relBuilder, List<Query> queryList) {
-        RelNode relNode;
-
-        relNode = relBuilder.scan("user").build();
-
-        return relNode;
+    public static RelNode makeGlobalQuery(RelBuilder relBuilder, List<Query> queryList) throws RelConversionException {
+        if (queryList.size() == 1) {
+            Query query = queryList.get(0);
+            Planner planner = query.planner;
+            return planner.rel(query.sqlNode).project();
+        }else{
+            return relBuilder.scan().build();
+        }
     }
-
-
 }

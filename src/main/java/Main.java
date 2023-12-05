@@ -62,20 +62,20 @@ public class Main {
         String sql = sc.nextLine();
         System.out.println("sql = " + sql);
         queryList.add(sql);
-        while(true){
-        sql = sc.nextLine();
-        System.out.println("sql = " + sql);
-        if(!sql.equals("q"))    queryList.add(sql);
-        else    break;
+        while (true) {
+            sql = sc.nextLine();
+            System.out.println("sql = " + sql);
+            if (!sql.equals("q")) queryList.add(sql);
+            else break;
         }
 
         Planner planner = Frameworks.getPlanner(config.build());
         SqlNode node;
         SqlNode validateNode;
         SqlWriter writer;
-        for(String query : queryList) {
+        for (String query : queryList) {
             // Parsing
-            node=planner.parse(query);
+            node = planner.parse(query);
 
             // Validation
             validateNode = planner.validate(node);

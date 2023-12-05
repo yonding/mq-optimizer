@@ -4,11 +4,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: 배치로 묶인 질의들 출력">
-      <change afterPath="$PROJECT_DIR$/src/main/java/Query.java" afterDir="false" />
+    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: 같은 조인 조건을 가진 질의들끼리 하나의 조인으로 묶어주는 메서드">
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/pom.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Main.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainApplication.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Query.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -153,7 +156,7 @@
       <workItem from="1701084372362" duration="9347000" />
       <workItem from="1701304500509" duration="599000" />
       <workItem from="1701692981133" duration="3379000" />
-      <workItem from="1701763752817" duration="12539000" />
+      <workItem from="1701763752817" duration="23026000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1701740903751</created>
@@ -176,7 +179,28 @@
       <option name="project" value="LOCAL" />
       <updated>1701769875813</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Feat: Query 클래스 추가">
+      <created>1701782102197</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1701782102197</updated>
+    </task>
+    <task id="LOCAL-00005" summary="Feat: Query 클래스에 joinEquals 추가">
+      <created>1701784993604</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1701784993604</updated>
+    </task>
+    <task id="LOCAL-00006" summary="Feat: 같은 조인 조건을 가진 질의들끼리 하나의 조인으로 묶어주는 메서드">
+      <created>1701790193173</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1701790193173</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -209,17 +233,9 @@
     <MESSAGE value="Initial Commit" />
     <MESSAGE value="Feat: 일괄 처리를 위해 여러개의 질의를 저장" />
     <MESSAGE value="Feat: 배치로 묶인 질의들 출력" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: 배치로 묶인 질의들 출력" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/MainApplication.java</url>
-          <line>58</line>
-          <option name="timeStamp" value="10" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Feat: Query 클래스 추가" />
+    <MESSAGE value="Feat: Query 클래스에 joinEquals 추가" />
+    <MESSAGE value="Feat: 같은 조인 조건을 가진 질의들끼리 하나의 조인으로 묶어주는 메서드" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: 같은 조인 조건을 가진 질의들끼리 하나의 조인으로 묶어주는 메서드" />
   </component>
 </project>

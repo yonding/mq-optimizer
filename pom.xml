@@ -29,6 +29,12 @@
             <artifactId>mysql-connector-java</artifactId>
             <version>8.0.26</version>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/org.verdictdb/verdictdb-core -->
+        <dependency>
+            <groupId>org.verdictdb</groupId>
+            <artifactId>verdictdb-core</artifactId>
+            <version>0.5.8</version>
+        </dependency>
         <!-- https://mvnrepository.com/artifact/com.google.guava/guava -->
         <dependency>
             <groupId>com.google.guava</groupId>

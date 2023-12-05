@@ -1,18 +1,24 @@
 import org.apache.calcite.adapter.jdbc.JdbcSchema;
+import org.apache.calcite.interpreter.Bindables;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.plan.Contexts;
+import org.apache.calcite.plan.RelOptTable;
+import org.apache.calcite.plan.hep.HepPlanner;
+import org.apache.calcite.plan.hep.HepProgram;
+import org.apache.calcite.rel.RelHomogeneousShuttle;
+import org.apache.calcite.rel.RelNode;
+import org.apache.calcite.rel.RelShuttle;
+import org.apache.calcite.rel.core.TableScan;
+import org.apache.calcite.rel.logical.LogicalTableScan;
 import org.apache.calcite.schema.SchemaPlus;
 import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
-import org.apache.calcite.tools.Frameworks;
-import org.apache.calcite.tools.Planner;
-import org.apache.calcite.tools.ValidationException;
+import org.apache.calcite.tools.*;
+import org.verdictdb.commons.DBTablePrinter;
 
 import javax.sql.DataSource;
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
@@ -20,8 +26,9 @@ import java.util.Scanner;
 public class MainApplication {
     private static final String MYSQL_SCHEMA = "mysql";
     private static List<Query> queryList = new ArrayList<>();
+    private static List<RelNode> relNodeList = new ArrayList<>();
 
-    public static void main(String[] args) throws SQLException, SqlParseException, ValidationException {
+    public static void main(String[] args) throws SQLException, SqlParseException, ValidationException, RelConversionException {
 
 //      1. Make a CalciteConnection Instance ***************************************************************************
         Connection connection = DriverManager.getConnection("jdbc:calcite:");
@@ -50,28 +57,86 @@ public class MainApplication {
 //      3. Bundle multiple queries into a single batch *****************************************************************
         do {
             Planner planner = Frameworks.getPlanner(config.build());
+            System.out.println("Please input a query.");
             Scanner sc = new Scanner(System.in);
             String sql = sc.nextLine();
-            if(sql.equals("q")) break;
-            try{
+            if (sql.equals("q")) {
+                if(queryList.size()>1) {
+                    System.out.println("----------------------------------------------\n");
+                    break;
+                }
+                else{
+                    System.out.println("You should input more than one query.");
+                    System.out.println("----------------------------------------------\n");
+                    continue;
+                }
+            }
+            try {
                 Query query = new Query(sql, planner);
                 queryList.add(query);
                 System.out.println("Query has been scheduled for batch processing.");
                 System.out.println("ㄴ[Scheduled Query] : " + sql);
-            }catch(SqlParseException sqlParseException){
+                System.out.println("----------------------------------------------\n");
+            } catch (SqlParseException sqlParseException) {
                 System.out.println("This query isn't parsable. Please check the query.");
-            }catch (ValidationException validationException){
+                System.out.println("----------------------------------------------\n");
+            } catch (ValidationException validationException) {
                 System.out.println("This query is invalid. Please check the query.");
+                System.out.println("----------------------------------------------\n");
             }
-        }while(true);
-
-        System.out.println("queryList.get(0).joinEquals(queryList.get(1)) = " + queryList.get(0).joinEquals(queryList.get(1)));
+        } while (true);
 
         // print query list
         System.out.println("\n[Query List]");
         int number = 1;
-        for(Query query : queryList) {
+        for (Query query : queryList) {
             System.out.println(number++ + ". " + query.sql);
+        }
+        System.out.println("----------------------------------------------\n");
+
+
+//      4. Group queries into separate batches.
+        List<List<Query>> batchList = MultiQueryOptimizer.separateQuery(queryList);
+
+
+//      5. Generate Global RelNode
+        RelBuilder relBuilder = RelBuilder.create(config.build());
+
+        for(List<Query> queryList : batchList){
+            RelNode node = MultiQueryOptimizer.makeGlobalQuery(relBuilder, queryList);
+            relNodeList.add(node);
+        }
+
+
+//      6. Execute Optimized RelNode and Print ResultSet
+
+        for(RelNode relNode : relNodeList){
+            HepProgram program = HepProgram.builder().build();
+            HepPlanner planner = new HepPlanner(program);
+            planner.setRoot(relNode);
+            RelNode optimizedNode = planner.findBestExp();
+
+            final RelShuttle shuttle = new RelHomogeneousShuttle() {
+                @Override
+                public RelNode visit(TableScan scan) {
+                    final RelOptTable table = scan.getTable();
+                    if (scan instanceof LogicalTableScan && Bindables.BindableTableScan.canHandle(table)) {
+                        return Bindables.BindableTableScan.create(scan.getCluster(), table);
+                    }
+                    return super.visit(scan);
+                }
+            };
+
+            optimizedNode = optimizedNode.accept(shuttle);
+
+            final RelRunner runner = connection.unwrap(RelRunner.class);
+            PreparedStatement ps = runner.prepare(optimizedNode);
+
+            ps.execute();
+
+            ResultSet resultSet = ps.getResultSet();
+            DBTablePrinter.printResultSet(resultSet);
+
         }
 
     }
@@ -79,7 +144,8 @@ public class MainApplication {
 }
 
 
-
-//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE p."amount" >= 5000
 //    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON u."id" = p."user_id" WHERE p."method" = 'TOSSPAY'
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE p."amount" >= 5000
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."discount_rate" = u."id" WHERE p."method" = 'TOSSPAY'
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."pid" = u."id" WHERE p."amount" >= 5000
 //    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE u."id" = 1
