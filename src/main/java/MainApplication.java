@@ -65,6 +65,8 @@ public class MainApplication {
             }
         }while(true);
 
+        System.out.println("queryList.get(0).joinEquals(queryList.get(1)) = " + queryList.get(0).joinEquals(queryList.get(1)));
+
         // print query list
         System.out.println("\n[Query List]");
         int number = 1;
@@ -79,5 +81,5 @@ public class MainApplication {
 
 
 //    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE p."amount" >= 5000
-//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE p."method" = 'TOSSPAY'
+//    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON u."id" = p."user_id" WHERE p."method" = 'TOSSPAY'
 //    select * from "mysql"."payment" AS p JOIN "mysql"."user" AS u ON p."user_id" = u."id" WHERE u."id" = 1
