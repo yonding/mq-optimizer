@@ -56,26 +56,25 @@ public class MainApplication {
             if(sql.equals("q")) break;
             try{
                 // Validation
-                SqlNode node = planner.parse(sql);
-                planner.validate(node);
+                SqlNode node = planner.parse(sql); // SqlParseException
+                SqlNode validateNode = planner.validate(node); // ValidationException
+                sqlNodeList.add(validateNode);
+                queryList.add(sql);
+                System.out.println("Query has been scheduled for batch processing.");
+                System.out.println("ㄴ[Scheduled Query] : " + sql);
             }catch(SqlParseException sqlParseException){
                 System.out.println("This query isn't parsable. Please check the query.");
-                continue;
-            }
-            catch (ValidationException validationException){
+            }catch (ValidationException validationException){
                 System.out.println("This query is invalid. Please check the query.");
-                continue;
             }
-            queryList.add(sql);
-            System.out.println("Query has been scheduled for batch processing.");
-            System.out.println("ㄴ[Scheduled Query] : " + sql);
         }while(true);
-
+        System.out.println("");
+        System.out.println("[Query List]");
+        int number = 1;
         for(String query : queryList) {
-            System.out.println("query = " + query);
+            System.out.println(number++ + ". " + query);
         }
     }
-
 
 }
 
