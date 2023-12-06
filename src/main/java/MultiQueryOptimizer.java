@@ -1,11 +1,7 @@
 import org.apache.calcite.rel.RelNode;
-import org.apache.calcite.sql.SqlNode;
-import org.apache.calcite.sql.parser.SqlParseException;
-import org.apache.calcite.sql.parser.SqlParser;
 import org.apache.calcite.tools.Planner;
 import org.apache.calcite.tools.RelBuilder;
 import org.apache.calcite.tools.RelConversionException;
-import org.apache.calcite.tools.ValidationException;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,7 +15,7 @@ public class MultiQueryOptimizer {
             if (queryFlagArray[i] == 1) continue;
             for (int j = i + 1; j < queryList.size(); j++) {
                 if (queryFlagArray[j] == 0 && queryList.get(i).joinEquals(queryList.get(j))) {
-                    if (queryFlagArray[i] == 0) { // if it is the first equal case,
+                    if (queryFlagArray[i] == 0) { // the first equal case
                         batchList.add(new ArrayList<Query>());
                         batchList.get(index).add(queryList.get(i));
                         queryFlagArray[i] = 1;
@@ -43,6 +39,7 @@ public class MultiQueryOptimizer {
             Planner planner = query.planner;
             return planner.rel(query.sqlNode).project();
         }else{
+            // 코드 추가해야 함.
             return relBuilder.scan().build();
         }
     }
