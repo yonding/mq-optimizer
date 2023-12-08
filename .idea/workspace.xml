@@ -4,10 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성(완성)">
-      <change afterPath="$PROJECT_DIR$/src/main/java/TestApplication.java" afterDir="false" />
+    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: Query 클래스에 joinTableList 멤버 추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Query.java" afterDir="false" />
     </list>
@@ -160,7 +158,7 @@
       <workItem from="1701692981133" duration="3379000" />
       <workItem from="1701763752817" duration="32157000" />
       <workItem from="1702000502408" duration="6071000" />
-      <workItem from="1702035961003" duration="1552000" />
+      <workItem from="1702035961003" duration="2406000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1701740903751</created>
@@ -218,7 +216,14 @@
       <option name="project" value="LOCAL" />
       <updated>1701828785471</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Feat: Query 클래스에 joinTableList 멤버 추가">
+      <created>1702038432852</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1702038432852</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -256,7 +261,8 @@
     <MESSAGE value="Feat: 같은 조인 조건을 가진 질의들끼리 하나의 조인으로 묶어주는 메서드" />
     <MESSAGE value="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성" />
     <MESSAGE value="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성(완성)" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성(완성)" />
+    <MESSAGE value="Feat: Query 클래스에 joinTableList 멤버 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: Query 클래스에 joinTableList 멤버 추가" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -267,11 +273,22 @@
           <option name="timeStamp" value="2" />
         </line-breakpoint>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java</url>
-          <line>42</line>
-          <option name="timeStamp" value="3" />
+          <url>file://$PROJECT_DIR$/src/main/java/Query.java</url>
+          <line>36</line>
+          <option name="timeStamp" value="9" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" type="java-line">
+          <url>file://$PROJECT_DIR$/src/main/java/Query.java</url>
+          <line>34</line>
+          <option name="timeStamp" value="10" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="org.apache.calcite.sql.SqlSelect" memberName="from" />
+        <PinnedItemInfo parentTag="org.apache.calcite.sql.SqlBasicCall" memberName="operands" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

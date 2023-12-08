@@ -16,6 +16,7 @@ public class Query {
     SqlBasicCall sqlWhere;
 
     Planner planner;
+    List<String> joinConditionList;
     List<String> joinTableList;
 
     Query(String sql, Planner planner) throws SqlParseException, ValidationException {
@@ -26,11 +27,14 @@ public class Query {
         this.sqlJoin = (SqlJoin) nodeList.get(2);
         this.sqlWhere = (SqlBasicCall) nodeList.get(3);
         this.planner = planner;
+        this.joinConditionList = new ArrayList<>();
         this.joinTableList = new ArrayList<>();
         for (SqlNode operand : ((SqlBasicCall)this.sqlJoin.getCondition()).getOperandList()) {
-            joinTableList.add(operand.toString());
+            joinConditionList.add(operand.toString());
         }
-        Collections.sort(joinTableList);
+        joinTableList.add(((SqlIdentifier)((SqlBasicCall)((SqlJoin)((SqlSelect) sqlNode).getFrom()).getLeft()).getOperandList().get(0)).names.get(1).toString());
+        joinTableList.add(((SqlIdentifier)((SqlBasicCall)((SqlJoin)((SqlSelect) sqlNode).getFrom()).getRight()).getOperandList().get(0)).names.get(1).toString());
+        Collections.sort(joinConditionList);
     }
 
     public boolean joinEquals(Query query) {
@@ -43,8 +47,8 @@ public class Query {
         if (!operator1.equals(operator2) || condition1.getOperandList().size() != condition2.getOperandList().size())
             return false;
 
-        for (int i = 0; i < this.joinTableList.size(); i++) {
-            if (!this.joinTableList.get(i).equals(query.joinTableList.get(i))) return false;
+        for (int i = 0; i < this.joinConditionList.size(); i++) {
+            if (!this.joinConditionList.get(i).equals(query.joinConditionList.get(i))) return false;
         }
 
         return true;
