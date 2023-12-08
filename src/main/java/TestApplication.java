@@ -22,7 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class MainApplication {
+public class TestApplication {
     private static final String MYSQL_SCHEMA = "mysql";
     private static List<Query> queryList = new ArrayList<>();
     private static List<RelNode> relNodeList = new ArrayList<>();
@@ -48,55 +48,43 @@ public class MainApplication {
         rootSchema.add(MYSQL_SCHEMA, JdbcSchema.create(rootSchema, MYSQL_SCHEMA, mysqlDataSource, null, null));
 
         Frameworks.ConfigBuilder config = Frameworks.newConfigBuilder()
-                .defaultSchema(rootSchema)
+                .defaultSchema(rootSchema.getSubSchema("mysql"))
                 .parserConfig(parserConfig)
                 .context(Contexts.of(calciteConnection.config()));
 
 
 //      3. Bundle multiple queries into a single batch *****************************************************************
-        do {
-            Planner planner = Frameworks.getPlanner(config.build());
-            System.out.println("Please input a query.");
-            Scanner sc = new Scanner(System.in);
-            String sql = sc.nextLine();
-            if (sql.equals("q")) {
-                if(queryList.size()>1) {
-                    System.out.println("----------------------------------------------\n");
-                    break;
-                }
-                else{
-                    System.out.println("You should input more than one query.");
-                    System.out.println("----------------------------------------------\n");
-                    continue;
-                }
-            }
-            try {
-                Query query = new Query(sql, planner);
-                queryList.add(query);
-                System.out.println("Query has been scheduled for batch processing.");
-                System.out.println("ㄴ[Scheduled Query] : " + sql);
-                System.out.println("----------------------------------------------\n");
-            } catch (SqlParseException sqlParseException) {
-                System.out.println("This query isn't parsable. Please check the query.");
-                System.out.println("----------------------------------------------\n");
-            } catch (ValidationException validationException) {
-                System.out.println("This query is invalid. Please check the query.");
-                System.out.println("----------------------------------------------\n");
-            }
-        } while (true);
+        Planner planner = Frameworks.getPlanner(config.build());
+        Query query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON u.\"id\" = p.\"user_id\" WHERE p.\"method\" = 'TOSSPAY'", planner);
+        queryList.add(query);
+
+        planner = Frameworks.getPlanner(config.build());
+        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"discount_rate\" = u.\"id\" WHERE p.\"method\" = 'TOSSPAY'", planner);
+        queryList.add(query);
+
+        planner = Frameworks.getPlanner(config.build());
+        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"pid\" = u.\"id\" WHERE p.\"amount\" >= 5000", planner);
+        queryList.add(query);
+
+        planner = Frameworks.getPlanner(config.build());
+        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"user_id\" = u.\"id\" WHERE p.\"amount\" >= 5000", planner);
+        queryList.add(query);
+
+        planner = Frameworks.getPlanner(config.build());
+        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"user_id\" = u.\"id\" WHERE u.\"id\" = 1", planner);
+        queryList.add(query);
 
         // print query list
         System.out.println("\n[Query List]");
         int number = 1;
-        for (Query query : queryList) {
-            System.out.println(number++ + ". " + query.sql);
+        for (Query q : queryList) {
+            System.out.println(number++ + ". " + q.sql);
         }
         System.out.println("----------------------------------------------\n");
 
 
 //      4. Group queries into separate batches.
         List<List<Query>> batchList = MultiQueryOptimizer.separateQuery(queryList);
-
 
 //      5. Generate Global RelNode
         RelBuilder relBuilder = RelBuilder.create(config.build());
@@ -111,9 +99,9 @@ public class MainApplication {
 
         for(RelNode relNode : relNodeList){
             HepProgram program = HepProgram.builder().build();
-            HepPlanner planner = new HepPlanner(program);
-            planner.setRoot(relNode);
-            RelNode optimizedNode = planner.findBestExp();
+            HepPlanner planner1 = new HepPlanner(program);
+            planner1.setRoot(relNode);
+            RelNode optimizedNode = planner1.findBestExp();
 
             final RelShuttle shuttle = new RelHomogeneousShuttle() {
                 @Override

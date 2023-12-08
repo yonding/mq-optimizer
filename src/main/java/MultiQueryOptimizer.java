@@ -40,7 +40,8 @@ public class MultiQueryOptimizer {
             return planner.rel(query.sqlNode).project();
         }else{
             // 코드 추가해야 함.
-            return relBuilder.scan().build();
+            queryList.get(0).sqlJoin.getOperandList();
+            return relBuilder.scan("user").build();
         }
     }
 }
