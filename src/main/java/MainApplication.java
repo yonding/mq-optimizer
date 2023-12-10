@@ -55,7 +55,6 @@ public class MainApplication {
 
 //      3. Bundle multiple queries into a single batch *****************************************************************
         do {
-            Planner planner = Frameworks.getPlanner(config.build());
             System.out.println("Please input a query.");
             Scanner sc = new Scanner(System.in);
             String sql = sc.nextLine();
@@ -71,7 +70,7 @@ public class MainApplication {
                 }
             }
             try {
-                Query query = new Query(sql, planner);
+                Query query = new Query(sql, config);
                 queryList.add(query);
                 System.out.println("Query has been scheduled for batch processing.");
                 System.out.println("ㄴ[Scheduled Query] : " + sql);
@@ -114,19 +113,6 @@ public class MainApplication {
             HepPlanner planner = new HepPlanner(program);
             planner.setRoot(relNode);
             RelNode optimizedNode = planner.findBestExp();
-
-            final RelShuttle shuttle = new RelHomogeneousShuttle() {
-                @Override
-                public RelNode visit(TableScan scan) {
-                    final RelOptTable table = scan.getTable();
-                    if (scan instanceof LogicalTableScan && Bindables.BindableTableScan.canHandle(table)) {
-                        return Bindables.BindableTableScan.create(scan.getCluster(), table);
-                    }
-                    return super.visit(scan);
-                }
-            };
-
-            optimizedNode = optimizedNode.accept(shuttle);
 
             final RelRunner runner = connection.unwrap(RelRunner.class);
             PreparedStatement ps = runner.prepare(optimizedNode);

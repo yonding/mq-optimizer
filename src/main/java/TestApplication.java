@@ -54,24 +54,26 @@ public class TestApplication {
 
 
 //      3. Bundle multiple queries into a single batch *****************************************************************
-        Planner planner = Frameworks.getPlanner(config.build());
-        Query query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON u.\"id\" = p.\"user_id\" WHERE p.\"method\" = 'TOSSPAY'", planner);
+        Query query = new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"pid\" WHERE (\"point\" > 99000 AND \"method\" = 'PAYCO') OR (\"point\" > 99000 AND \"method\" = 'PAYCO') OR (\"point\" > 99000 AND \"method\" = 'PAYCO')", config);
+        queryList.add(query);
+//        query = new Query("select * , " +
+//                "CASE WHEN \"id\" <= 5 THEN '0 ' ELSE NULL END AS A, " +
+//                "CASE WHEN \"method\" = 'PAYCO' THEN '1 ' ELSE NULL END AS B " +
+//                "from \"mysql\".\"payment\" " +
+//                "JOIN \"mysql\".\"user\" " +
+//                "ON \"id\" = \"user_id\" " +
+//                "WHERE \"id\" <= 10 AND \"method\" = 'PAYCO'"
+//                , planner);
+//        queryList.add(query);
+
+//        planner = Frameworks.getPlanner(config.build());
+        query = new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"user_id\" WHERE (\"id\" >= 59950 AND \"amount\" >= 49000) OR (\"id\" <= 10 AND \"method\" = 'TOSSPAY') OR (\"id\" <= 10 AND \"method\" ='APPLEPAY')", config);
         queryList.add(query);
 
-        planner = Frameworks.getPlanner(config.build());
-        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"discount_rate\" = u.\"id\" WHERE p.\"method\" = 'TOSSPAY'", planner);
+        query = new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"user_id\" WHERE \"id\" <= 10 AND \"method\" = 'TOSSPAY'", config);
         queryList.add(query);
 
-        planner = Frameworks.getPlanner(config.build());
-        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"pid\" = u.\"id\" WHERE p.\"amount\" >= 5000", planner);
-        queryList.add(query);
-
-        planner = Frameworks.getPlanner(config.build());
-        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"user_id\" = u.\"id\" WHERE p.\"amount\" >= 5000", planner);
-        queryList.add(query);
-
-        planner = Frameworks.getPlanner(config.build());
-        query = new Query("select * from \"mysql\".\"payment\" AS p JOIN \"mysql\".\"user\" AS u ON p.\"user_id\" = u.\"id\" WHERE u.\"id\" = 1", planner);
+        query = new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"user_id\" WHERE \"id\" <= 10 AND \"method\" ='APPLEPAY'" , config);
         queryList.add(query);
 
         // print query list
@@ -85,6 +87,13 @@ public class TestApplication {
 
 //      4. Group queries into separate batches.
         List<List<Query>> batchList = MultiQueryOptimizer.separateQuery(queryList);
+        int index = 1;
+        for(List<Query> batch : batchList){
+            System.out.println("\n[BATCH "+index+++"]");
+            for(Query q : batch){
+                System.out.println(q.sql);
+            }
+        }
 
 //      5. Generate Global RelNode
         RelBuilder relBuilder = RelBuilder.create(config.build());
@@ -102,19 +111,6 @@ public class TestApplication {
             HepPlanner planner1 = new HepPlanner(program);
             planner1.setRoot(relNode);
             RelNode optimizedNode = planner1.findBestExp();
-
-            final RelShuttle shuttle = new RelHomogeneousShuttle() {
-                @Override
-                public RelNode visit(TableScan scan) {
-                    final RelOptTable table = scan.getTable();
-                    if (scan instanceof LogicalTableScan && Bindables.BindableTableScan.canHandle(table)) {
-                        return Bindables.BindableTableScan.create(scan.getCluster(), table);
-                    }
-                    return super.visit(scan);
-                }
-            };
-
-            optimizedNode = optimizedNode.accept(shuttle);
 
             final RelRunner runner = connection.unwrap(RelRunner.class);
             PreparedStatement ps = runner.prepare(optimizedNode);

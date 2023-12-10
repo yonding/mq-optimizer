@@ -4,10 +4,12 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: Query 클래스에 joinTableList 멤버 추가">
+    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: Query 클래스에 joinConditionList 멤버 추가">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Query.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/main/java/TestApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -158,7 +160,10 @@
       <workItem from="1701692981133" duration="3379000" />
       <workItem from="1701763752817" duration="32157000" />
       <workItem from="1702000502408" duration="6071000" />
-      <workItem from="1702035961003" duration="2406000" />
+      <workItem from="1702035961003" duration="3225000" />
+      <workItem from="1702040612794" duration="1638000" />
+      <workItem from="1702042961469" duration="25446000" />
+      <workItem from="1702203115656" duration="7739000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1701740903751</created>
@@ -223,7 +228,14 @@
       <option name="project" value="LOCAL" />
       <updated>1702038432852</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Feat: Query 클래스에 joinConditionList 멤버 추가">
+      <created>1702039269158</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1702039269158</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -262,25 +274,16 @@
     <MESSAGE value="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성" />
     <MESSAGE value="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성(완성)" />
     <MESSAGE value="Feat: Query 클래스에 joinTableList 멤버 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: Query 클래스에 joinTableList 멤버 추가" />
+    <MESSAGE value="Feat: Query 클래스에 joinConditionList 멤버 추가" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: Query 클래스에 joinConditionList 멤버 추가" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/TestApplication.java</url>
-          <line>92</line>
-          <option name="timeStamp" value="2" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Query.java</url>
-          <line>36</line>
-          <option name="timeStamp" value="9" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/main/java/Query.java</url>
-          <line>34</line>
-          <option name="timeStamp" value="10" />
+          <url>file://$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java</url>
+          <line>61</line>
+          <option name="timeStamp" value="28" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

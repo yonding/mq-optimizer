@@ -1,8 +1,12 @@
+import org.apache.calcite.rel.RelNode;
 import org.apache.calcite.sql.*;
 import org.apache.calcite.sql.parser.SqlParseException;
+import org.apache.calcite.tools.Frameworks;
 import org.apache.calcite.tools.Planner;
+import org.apache.calcite.tools.RelConversionException;
 import org.apache.calcite.tools.ValidationException;
 
+import java.sql.ResultSet;
 import java.util.*;
 
 public class Query {
@@ -13,27 +17,26 @@ public class Query {
     // 질의 정보
     List selectList;
     SqlJoin sqlJoin;
-    SqlBasicCall sqlWhere;
 
     Planner planner;
     List<String> joinConditionList;
-    List<String> joinTableList;
+    Frameworks.ConfigBuilder config;
+    ResultSet resultSet;
 
-    Query(String sql, Planner planner) throws SqlParseException, ValidationException {
+    Query(String sql, Frameworks.ConfigBuilder config) throws SqlParseException, ValidationException, RelConversionException {
+        this.planner = Frameworks.getPlanner(config.build());
+        this.config = config;
         this.sql = sql;
         this.sqlNode = planner.validate(planner.parse(sql));
+//        RelNode relNode = planner.rel(sqlNode).project();
         this.nodeList = ((SqlSelect) sqlNode).getOperandList();
         this.selectList = (SqlNodeList) this.nodeList.get(1);
         this.sqlJoin = (SqlJoin) nodeList.get(2);
-        this.sqlWhere = (SqlBasicCall) nodeList.get(3);
-        this.planner = planner;
+        for(SqlNode whereInfo : ((SqlBasicCall) ((SqlSelect) sqlNode).getWhere()).getOperandList())
         this.joinConditionList = new ArrayList<>();
-        this.joinTableList = new ArrayList<>();
         for (SqlNode operand : ((SqlBasicCall)this.sqlJoin.getCondition()).getOperandList()) {
             joinConditionList.add(operand.toString());
         }
-        joinTableList.add(((SqlIdentifier)((SqlBasicCall)((SqlJoin)((SqlSelect) sqlNode).getFrom()).getLeft()).getOperandList().get(0)).names.get(1).toString());
-        joinTableList.add(((SqlIdentifier)((SqlBasicCall)((SqlJoin)((SqlSelect) sqlNode).getFrom()).getRight()).getOperandList().get(0)).names.get(1).toString());
         Collections.sort(joinConditionList);
     }
 
