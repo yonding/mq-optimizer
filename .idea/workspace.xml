@@ -4,11 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: Query 클래스에 joinConditionList 멤버 추가">
+    <list default="true" id="aab6070d-2984-4001-ba69-0cb899dd2f91" name="Changes" comment="Feat: makeGlobalQuery 완성">
+      <change afterPath="$PROJECT_DIR$/src/main/java/SingleTestApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/MainApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MainApplication.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main/java/Query.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/Query.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/main/java/TestApplication.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/main/java/TestApplication.java" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -71,19 +70,11 @@
       <recent name="$PROJECT_DIR$/calcite" />
       <recent name="$PROJECT_DIR$" />
     </key>
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="" />
+    </key>
   </component>
   <component name="RunManager" selected="Application.TestApplication">
-    <configuration name="CalciteJdbcExample" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
-      <envs>
-        <env name="DB_USER" value="yonding" />
-        <env name="DB_PASSWORD" value="Rlarkdud5762!" />
-      </envs>
-      <option name="MAIN_CLASS_NAME" value="CalciteJdbcExample" />
-      <module name="mq-optimizer" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
     <configuration name="Example" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Example" />
       <module name="mq-optimizer" />
@@ -113,6 +104,17 @@
         <option name="Make" enabled="true" />
       </method>
     </configuration>
+    <configuration name="SingleTestApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <envs>
+        <env name="DB_USER" value="yonding" />
+        <env name="DB_PASSWORD" value="Rlarkdud5762!" />
+      </envs>
+      <option name="MAIN_CLASS_NAME" value="SingleTestApplication" />
+      <module name="mq-optimizer" />
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
     <configuration name="TestApplication" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <envs>
         <env name="DB_USER" value="yonding" />
@@ -125,19 +127,19 @@
       </method>
     </configuration>
     <list>
+      <item itemvalue="Application.SingleTestApplication" />
       <item itemvalue="Application.TestApplication" />
       <item itemvalue="Application.MainApplication" />
       <item itemvalue="Application.Example" />
       <item itemvalue="Application.Main" />
-      <item itemvalue="Application.CalciteJdbcExample" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Application.TestApplication" />
+        <item itemvalue="Application.SingleTestApplication" />
         <item itemvalue="Application.MainApplication" />
         <item itemvalue="Application.Main" />
         <item itemvalue="Application.Example" />
-        <item itemvalue="Application.CalciteJdbcExample" />
       </list>
     </recent_temporary>
   </component>
@@ -163,7 +165,7 @@
       <workItem from="1702035961003" duration="3225000" />
       <workItem from="1702040612794" duration="1638000" />
       <workItem from="1702042961469" duration="25446000" />
-      <workItem from="1702203115656" duration="7739000" />
+      <workItem from="1702203115656" duration="13257000" />
     </task>
     <task id="LOCAL-00001" summary="Initial Commit">
       <created>1701740903751</created>
@@ -235,7 +237,14 @@
       <option name="project" value="LOCAL" />
       <updated>1702039269158</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="Feat: makeGlobalQuery 완성">
+      <created>1702220015029</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1702220015029</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -275,15 +284,16 @@
     <MESSAGE value="Feat: 배치 안에 질의가 하나인 경우, RelNode 생성(완성)" />
     <MESSAGE value="Feat: Query 클래스에 joinTableList 멤버 추가" />
     <MESSAGE value="Feat: Query 클래스에 joinConditionList 멤버 추가" />
-    <option name="LAST_COMMIT_MESSAGE" value="Feat: Query 클래스에 joinConditionList 멤버 추가" />
+    <MESSAGE value="Feat: makeGlobalQuery 완성" />
+    <option name="LAST_COMMIT_MESSAGE" value="Feat: makeGlobalQuery 완성" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/main/java/MultiQueryOptimizer.java</url>
-          <line>61</line>
-          <option name="timeStamp" value="28" />
+          <line>63</line>
+          <option name="timeStamp" value="34" />
         </line-breakpoint>
       </breakpoints>
     </breakpoint-manager>

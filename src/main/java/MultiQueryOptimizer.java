@@ -47,8 +47,12 @@ public class MultiQueryOptimizer {
             return planner.rel(query.sqlNode).project(); // 여기에서 어떻게 RelNode가 만들어지는지 보기
         }else{
             // 코드 추가해야 함.
-            String globalQuery = queryList.get(0).sql.substring(0, queryList.get(0).sql.indexOf("WHERE ")+6);
+            String globalQuery = queryList.get(0).sql.substring(0, queryList.get(0).sql.indexOf("from "))+", CASE WHEN "+queryList.get(0).sql.substring(queryList.get(0).sql.indexOf("WHERE ")+6)+" THEN 'A' ELSE NULL END " +
+                    queryList.get(0).sql.substring(queryList.get(0).sql.indexOf("from "), queryList.get(0).sql.indexOf("WHERE ")+6);
 
+            for(Query query : queryList){
+                String condition = query.sql.substring(query.sql.indexOf("WHERE ")+6);
+            }
             String conditionStr = "";
 
             for(Query query : queryList){
@@ -63,22 +67,5 @@ public class MultiQueryOptimizer {
         }
     }
 
-    public static SqlBinaryOperator operatorConverter(SqlKind sqlKind){
-        switch (sqlKind.toString()) {
-            case "EQUALS":
-                return EQUALS;
-            case "NOT_EQUALS":
-                return NOT_EQUALS;
-            case "GREATER_THAN":
-                return GREATER_THAN;
-            case "GREATER_THAN_OR_EQUAL":
-                return GREATER_THAN_OR_EQUAL;
-            case "LESS_THAN":
-                return LESS_THAN;
-            case "LESS_THAN_OR_EQUAL":
-                return LESS_THAN_OR_EQUAL;
-        }
-        return EQUALS;
-    }
 }
 

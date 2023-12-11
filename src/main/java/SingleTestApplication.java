@@ -1,15 +1,9 @@
-import  org.apache.calcite.adapter.jdbc.JdbcSchema;
-import org.apache.calcite.interpreter.Bindables;
+import org.apache.calcite.adapter.jdbc.JdbcSchema;
 import org.apache.calcite.jdbc.CalciteConnection;
 import org.apache.calcite.plan.Contexts;
-import org.apache.calcite.plan.RelOptTable;
 import org.apache.calcite.plan.hep.HepPlanner;
 import org.apache.calcite.plan.hep.HepProgram;
-import org.apache.calcite.rel.RelHomogeneousShuttle;
 import org.apache.calcite.rel.RelNode;
-import org.apache.calcite.rel.RelShuttle;
-import org.apache.calcite.rel.core.TableScan;
-import org.apache.calcite.rel.logical.LogicalTableScan;
 import org.apache.calcite.schema.SchemaPlus;
 import org.apache.calcite.sql.parser.SqlParseException;
 import org.apache.calcite.sql.parser.SqlParser;
@@ -20,9 +14,8 @@ import javax.sql.DataSource;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
-public class TestApplication {
+public class SingleTestApplication {
     private static final String MYSQL_SCHEMA = "mysql";
     private static List<Query> queryList = new ArrayList<>();
     private static List<RelNode> relNodeList = new ArrayList<>();
@@ -53,7 +46,7 @@ public class TestApplication {
                 .context(Contexts.of(calciteConnection.config()));
 
 
-//      3. Bundle multiple queries into a single batch *****************************************************************
+//      3. Add queries into queryList *****************************************************************
         queryList.add(new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"pid\" WHERE (\"point\" >= 99000 AND \"level\" < 3 AND \"method\" = 'PAYCO') OR (\"point\" > 99000 AND \"method\" = 'PAYCO')", config));
         queryList.add(new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"user_id\" WHERE (\"id\" >= 59950 AND \"amount\" >= 49000) OR (\"id\" <= 10 AND \"method\" = 'TOSSPAY') OR (\"id\" <= 10 AND \"method\" ='APPLEPAY')", config));
         queryList.add(new Query("select * from \"mysql\".\"payment\" JOIN \"mysql\".\"user\" ON \"id\" = \"user_id\" WHERE (\"id\" >= 59950 AND \"amount\" >= 49000) OR (\"id\" <= 10 AND \"method\" = 'TOSSPAY') OR (\"id\" <= 10 AND \"method\" ='APPLEPAY')", config));
@@ -77,38 +70,16 @@ public class TestApplication {
 
         long startTime = System.nanoTime();
 
-        // print query list
-        System.out.println("\n-----------------[Query List]-----------------");
-        int number = 1;
-        for (Query q : queryList) {
-            System.out.println(number++ + ". " + q.sql);
-        }
-        System.out.println("\n");
 
-
-//      4. Group queries into separate batches.
-        List<List<Query>> batchList = MultiQueryOptimizer.separateQuery(queryList);
-        int index = 1;
-        System.out.println("-----------------[BATCH LIST]-----------------");
-        for(List<Query> batch : batchList){
-            System.out.println("[BATCH "+index+++"]");
-            for(Query q : batch){
-                System.out.println(q.sql);
-            }
-            System.out.println("");
-        }
-
-//      5. Generate Global RelNode
-        RelBuilder relBuilder = RelBuilder.create(config.build());
-
-        for(List<Query> queryList : batchList){
-            RelNode node = MultiQueryOptimizer.makeGlobalQuery(relBuilder, queryList);
+//      4. Generate RelNode
+        for(Query query : queryList){
+            RelNode node = query.planner.rel(query.sqlNode).project();
             relNodeList.add(node);
         }
 
-        index = 1;
+        int index = 1;
 //      6. Execute Optimized RelNode and Print ResultSet
-        System.out.println("\n-----------------[Result Sets for Batches]-----------------");
+        System.out.println("\n-----------------[Result Sets for Queries]-----------------");
         for(RelNode relNode : relNodeList){
             HepProgram program = HepProgram.builder().build();
             HepPlanner planner1 = new HepPlanner(program);
@@ -121,11 +92,10 @@ public class TestApplication {
             ps.execute();
 
             ResultSet resultSet = ps.getResultSet();
-            System.out.println("\n[Result Set for Batch "+index+++"]");
+            System.out.println("\n[Result Set for Query "+index+++"]");
             DBTablePrinter.printResultSet(resultSet);
             ps.close();
         }
-
         long endTime = System.nanoTime();
 
         // 소요된 시간 계산 (나노초)
