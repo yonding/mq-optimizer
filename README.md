@@ -1,6 +1,6 @@
 # mq-optimizer
 
-Multi-Query Optimizer Developed Using Apache Calcite (2023) <br>
+Multi-Query Optimizer Developed Using Apache Calcite (2023) <br><br>
 
 ##  Motivation
 오늘날 질의 처리에 대한 기업들의 요구 수준이 높아짐에 따라 SharedDB, PsiDB와 같이 다중 질의 최적화를 지원하는 Concurrent DBMS(CDBMS) 연구가 이뤄지고 있다. 해당 연구 주제와 관련하여 다양한 연구를 시도하고 싶었으나 (내가 알기로는) 아직 오픈 소스로 공개된 다중 질의 최적기가 없어 연구를 진행할 수가 없었다. 공개된 Binary program도 존재하지 않았다. <br><br>
